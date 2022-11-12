@@ -13,10 +13,15 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import lombok.AllArgsConstructor;
+import lombok.AllArgsConstructor
+/*
+{
+"title":"Physiscs",
+"instructorName":"Rahul"
+}
+*/;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 @Entity
 @Data
 @AllArgsConstructor
