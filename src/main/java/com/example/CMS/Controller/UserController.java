@@ -26,7 +26,7 @@ public class UserController {
 		return userService.saveNewUser(user);
 	}
 
-	@GetMapping("/getAll")
+	@GetMapping("/getAllUser")
 	public List<Users> getAllUsers(){
 		return userService.getAllUsers();
 	}
@@ -40,4 +40,11 @@ public class UserController {
 	public String deleteUser(@PathVariable int id)throws Exception {
 		return userService.deleteUser(id);
 	}
+	
+	@GetMapping("/user/{userId}")
+	public Users findUserById(@PathVariable("userId") int userId) {
+		return userService.findUserById(userId);
+	}
+	
+	
 }

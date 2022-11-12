@@ -1,6 +1,7 @@
 package com.example.CMS.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,15 +31,23 @@ public class UserManagementService {
 		    u.setFirstname(user.getFirstname());
 		    u.setPassword(user.getPassword());
 		    u.setPhone(user.getPhone());
-		    u.setRole(user.getRole());
+		   u.setRole(user.getRole());
 		    u.setUsername(user.getUsername());
 		    
 		    userRepository.save(u);
-		    return "Upadted User";
+		    return "Updated User";
 	}
 	
 	public String deleteUser(int id) {
 		userRepository.deleteById(id);
 		return "Deleted the user";
+	}
+	
+	public Users findUserById(int userId) {
+		Optional<Users> data = userRepository.findById(userId);
+		if(data.isPresent()) {
+			return data.get();
+		}
+		return null;
 	}
 }
