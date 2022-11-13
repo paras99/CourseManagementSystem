@@ -44,9 +44,9 @@ public class AssignmentManagementService {
 	}
 
 	public Assignment findAssignmentById(int assignmentId) {
-		Optional<Assignment> data = assignmentRepository.findById(assignmentId);
-		if (data.isPresent()) {
-			return data.get();
+		Optional<Assignment> assignmentData = assignmentRepository.findById(assignmentId);
+		if (assignmentData.isPresent()) {
+			return assignmentData.get();
 		}
 		return null;
 	}

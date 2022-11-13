@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.CMS.Model.Assignment;
 import com.example.CMS.Service.AssignmentManagementService;
 
 @RestController
+@RequestMapping("/assignment")
 public class AssignmentController {
 	@Autowired
 	AssignmentManagementService assignmentService;
@@ -41,7 +43,7 @@ public class AssignmentController {
 		return assignmentService.deleteAssignment(id);
 	}
 	
-	@GetMapping("/Assignment/{AssignmentId}")
+	@GetMapping("/{assignmentId}")
 	public Assignment findAssignmentById(@PathVariable("assignmentId") int assignmentId) {
 		return assignmentService.findAssignmentById(assignmentId);
 	}

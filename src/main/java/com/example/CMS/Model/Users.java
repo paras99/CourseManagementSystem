@@ -5,8 +5,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 /*JSON DATA 
 {
@@ -23,14 +25,9 @@ import lombok.NoArgsConstructor;
 
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Users {
-
-	public enum Role {
-		ADMIN, EDITOR, USER;
-	}
 
 	@Id
 	@GeneratedValue
@@ -40,10 +37,8 @@ public class Users {
 	private String password;
 	private String firstname;
 	private String lastname;
-	@NotNull
 	private Roles role;
 	private String phone;
-
 	private String email;
 
 	// No setter for ID
@@ -58,7 +53,8 @@ public class Users {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
+	@JsonIgnore
+	@JsonProperty(value = "user_password")
 	public String getPassword() {
 		return password;
 	}
@@ -113,4 +109,5 @@ public class Users {
 				+ ", lastname=" + lastname + ", role=" + role + ", phone=" + phone + ", email=" + email + "]";
 	}
 
+	
 }
