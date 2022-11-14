@@ -32,8 +32,6 @@ Here we are having 3 roles: ADMIN, STUDENT and INSTRUCTOR and following rights:
 Have used H2 database for quick operations and setup.
 
 Spring JWT token/ security is also implemented in the code on basic level 
-NOTE: NEED TO WORK MORE ON SECURITY LEVEL FOR ROLE BASED ACCESS
-NOTE: CURRENTLY COMMENTED TO MAKE CHECK THE COMPLETE FOLLOW OF APPLICATION
-
+Now JWT is ready for all API endpoints hit !
 
 JUNIT is written for Service layers as general reference.
