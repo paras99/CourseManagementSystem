@@ -5,10 +5,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.CMS.JWTConfig.JWTAuthenticationFilter;
 import com.example.CMS.Model.Roles;
 import com.example.CMS.Model.Users;
 import com.example.CMS.Repository.UserRepository;
@@ -18,6 +25,9 @@ public class UserManagementService {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	JWTAuthenticationFilter jwtAuthenticationFilter;
 
 	public String saveNewUser(Users user) {
 		//Here Encoding the Password by BASE64 to protect
@@ -28,14 +38,11 @@ public class UserManagementService {
 	}
 
 	public List<Users> getAllUsers(int userId) throws Exception {
-		Users fetched = fetchUser(userId);
-		if (fetched == null)
-			throw new Exception("NO DATA");
-
-		if (!fetched.getRole().equals(Roles.ADMIN)) {  //checking role based acccess
-			throw new Exception("Only ADMIN Allowed ");
-		}
+		boolean fetched = fetchUser(userId);
+		if(fetched==true)
 		return userRepository.findAll();
+		else
+			throw new Exception("ONLY ADMIN CAN FETCH");
 	}
 
 	public String updateUser(int id, Users user, int userId) throws Exception {
@@ -52,27 +59,25 @@ public class UserManagementService {
 		u.setRole(user.getRole());
 		u.setUsername(user.getUsername());
 		
-		Users fetched = fetchUser(userId);
-		if (fetched == null)
-			throw new Exception("NO DATA");
-
-		if (!fetched.getRole().equals(Roles.ADMIN)) {
-			throw new Exception("Only ADMIN Allowed ");
-		}
+		boolean fetched = fetchUser(userId);
+		if(fetched==true) {
 		userRepository.save(u);
 		return "Updated User";
+		}
+		else {
+			throw new Exception("ONLY ADMIN CAN UPDATE");
+		}
 	}
 
 	public String deleteUser(int id,int userId) throws Exception {
-		Users fetched = fetchUser(userId);
-		if (fetched == null)
-			throw new Exception("NO DATA");
-
-		if (!fetched.getRole().equals(Roles.ADMIN)) {
-			throw new Exception("Only ADMIN Allowed ");
-		}
+		boolean fetched = fetchUser(userId);
+		if(fetched==true) {
 		userRepository.deleteById(id);
 		return "Deleted the user";
+		}
+		else {
+			throw new Exception("ONLY ADMIN CAN DELETE");
+		}
 	}
 
 	public Users findUserById(int userId) {
@@ -83,25 +88,29 @@ public class UserManagementService {
 		return null;
 	}
 	// creates the mapping by API Call and Validate the role
-	public Users fetchUser(int userId) {
+	public boolean fetchUser(int userId) {
+		HttpServletRequest request=jwtAuthenticationFilter.getHeader();
+		String requestTokenHeader=request.getHeader("Authorization");
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", requestTokenHeader);
 		String url = "http://localhost:8080/user/" + String.valueOf(userId);
 		RestTemplate restTemplate = new RestTemplate();
-		Users result = restTemplate.getForObject(url, Users.class);
-		return result;
+		HttpEntity<String> httpEntity = new HttpEntity<>("some body", headers);
+		ResponseEntity<String> response =restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+		System.out.println(response.getBody().contains("ADMIN"));
+		return response.getBody().contains("ADMIN"); 
 	}
 
 	public List<Users> findAllStudents(int userId) throws Exception{
-		Users fetched = fetchUser(userId);
-		if (fetched == null)
-			throw new Exception("NO DATA");
-
-		if (!fetched.getRole().equals(Roles.ADMIN)) {
-			throw new Exception("Only ADMIN Allowed ");
-		}
+		boolean fetched = fetchUser(userId);
+		if(fetched==true) {
 		List<Users> check= userRepository.findAll();
 		List<Users> allStudent = check.stream()
 				  .filter(student -> Roles.STUDENT.equals(student.getRole())).collect(Collectors.toList());
-			return allStudent;	  
+			return allStudent;	
+		}
+		else
+			return null;
 	}
 
 	public UserManagementService(UserRepository userRepository) {

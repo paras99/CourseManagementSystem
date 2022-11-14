@@ -3,13 +3,18 @@ package com.example.CMS.Service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.CMS.JWTConfig.JWTAuthenticationFilter;
 import com.example.CMS.Model.Assignment;
-import com.example.CMS.Model.Roles;
-import com.example.CMS.Model.Users;
 import com.example.CMS.Repository.AssignmentRepository;
 
 @Service
@@ -17,13 +22,14 @@ public class AssignmentManagementService {
 
 	@Autowired
 	AssignmentRepository assignmentRepository;
+	
+	@Autowired
+	JWTAuthenticationFilter jwtAuthenticationFilter;
 
 	public String saveNewAssignment(Assignment assignment, int userId) throws Exception{
-		Users fetched = fetchUser(userId);
 
-		if (!fetched.getRole().equals(Roles.INSTRUCTOR)) {
-			throw new Exception("Only Instructor Allowed ");
-		}
+		boolean fetched = fetchUser(userId);
+		if(fetched==true)
 		assignmentRepository.save(assignment);
 		return "Created new assignment";
 	}
@@ -59,11 +65,17 @@ public class AssignmentManagementService {
 		return null;
 	}
 // creates the mapping by API Call and Validate the role
-	public Users fetchUser(int id) {
-		String url = "http://localhost:8080/user/" + String.valueOf(id);
+	public boolean fetchUser(int userId) {
+		HttpServletRequest request=jwtAuthenticationFilter.getHeader();
+		String requestTokenHeader=request.getHeader("Authorization");
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", requestTokenHeader);
+		String url = "http://localhost:8080/user/" + String.valueOf(userId);
 		RestTemplate restTemplate = new RestTemplate();
-		Users result = restTemplate.getForObject(url, Users.class);
-		return result;
+		HttpEntity<String> httpEntity = new HttpEntity<>("some body", headers);
+		ResponseEntity<String> response =restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+		System.out.println(response.getBody().contains("INSTRUCTOR"));
+		return response.getBody().contains("INSTRUCTOR"); 
 	}
 
 	public AssignmentManagementService(AssignmentRepository assignmentRepository) {

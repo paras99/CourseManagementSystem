@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import com.example.CMS.JWTConfig.JWTAuthenticationFilter;
 import com.example.CMS.Model.Course;
 import com.example.CMS.Model.CourseUserMapping;
 import com.example.CMS.Model.Roles;
@@ -25,6 +25,9 @@ public class CourseUserMappingService {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	JWTAuthenticationFilter jwtAuthenticationFilter;
 
 	public String saveNewMapping(CourseUserMapping courseUserMapping) throws Exception {
 
@@ -51,18 +54,10 @@ public class CourseUserMappingService {
 		List<CourseUserMapping> allStudents = courseUserMappingRepository.findByCourseId(courseId);
 		return allStudents;
 	}
-	// creates the mapping by API Call and Validate the role
-	public Users fetchUser(int id) {
-		String url="http://localhost:8080/user/"+String.valueOf(id);
-		RestTemplate restTemplate=new RestTemplate();
-		Users result=restTemplate.getForObject(url, Users.class);
-		return result;
-	}
 
 	public CourseUserMappingService(CourseUserMappingRepository courseUserMappingRepository) {
 		this.courseUserMappingRepository = courseUserMappingRepository;
-	
+
 	}
 
-	
 }
