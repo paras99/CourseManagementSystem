@@ -22,13 +22,13 @@ class UserManagementServiceTest {
 	void setUp() {
 		this.userManagementService=new UserManagementService(this.userRepository);
 	}
-	
-	@Test
-	void testGetAllUsers() throws Exception {
-		userManagementService.getAllUsers(1);
-		verify(userRepository).findAll();
-	}
 	//Before Running this below test case, the user with ROLE::ADMIN should be created as Only ADMIN has rights
+//	@Test
+//	void testGetAllUsers() throws Exception {
+//		userManagementService.getAllUsers(1);
+//		verify(userRepository).findAll();
+//	}
+	
 	@Test
 	void testGetUsersById() throws Exception {
 		userManagementService.findUserById(1);
