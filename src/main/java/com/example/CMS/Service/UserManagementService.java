@@ -20,6 +20,7 @@ public class UserManagementService {
 	UserRepository userRepository;
 
 	public String saveNewUser(Users user) {
+		//Here Encoding the Password by BASE64 to protect
 		String encodedPassword = Base64.getUrlEncoder().encodeToString(user.getPassword().getBytes());
 		user.setPassword(encodedPassword);
 		userRepository.save(user);
@@ -31,7 +32,7 @@ public class UserManagementService {
 		if (fetched == null)
 			throw new Exception("NO DATA");
 
-		if (!fetched.getRole().equals(Roles.ADMIN)) {
+		if (!fetched.getRole().equals(Roles.ADMIN)) {  //checking role based acccess
 			throw new Exception("Only ADMIN Allowed ");
 		}
 		return userRepository.findAll();
@@ -81,7 +82,7 @@ public class UserManagementService {
 		}
 		return null;
 	}
-
+	// creates the mapping by API Call and Validate the role
 	public Users fetchUser(int userId) {
 		String url = "http://localhost:8080/user/" + String.valueOf(userId);
 		RestTemplate restTemplate = new RestTemplate();
@@ -102,4 +103,9 @@ public class UserManagementService {
 				  .filter(student -> Roles.STUDENT.equals(student.getRole())).collect(Collectors.toList());
 			return allStudent;	  
 	}
+
+	public UserManagementService(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+	
 }

@@ -51,7 +51,7 @@ public class CourseUserMappingService {
 		List<CourseUserMapping> allStudents = courseUserMappingRepository.findByCourseId(courseId);
 		return allStudents;
 	}
-	
+	// creates the mapping by API Call and Validate the role
 	public Users fetchUser(int id) {
 		String url="http://localhost:8080/user/"+String.valueOf(id);
 		RestTemplate restTemplate=new RestTemplate();
@@ -59,4 +59,10 @@ public class CourseUserMappingService {
 		return result;
 	}
 
+	public CourseUserMappingService(CourseUserMappingRepository courseUserMappingRepository) {
+		this.courseUserMappingRepository = courseUserMappingRepository;
+	
+	}
+
+	
 }

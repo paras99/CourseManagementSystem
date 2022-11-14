@@ -23,9 +23,9 @@ public class AssignmentController {
 	@Autowired
 	AssignmentManagementService assignmentService;
 	
-	@PostMapping("/addAssignment")
-	public String saveAssignment(@Valid @RequestBody Assignment assignment) {
-		return assignmentService.saveNewAssignment(assignment);
+	@PostMapping("/addAssignment/{userId}")
+	public String saveAssignment(@Valid @RequestBody Assignment assignment, @PathVariable int userId) throws Exception {
+		return assignmentService.saveNewAssignment(assignment,userId);
 	}
 
 	@GetMapping("/getAllAssignment")

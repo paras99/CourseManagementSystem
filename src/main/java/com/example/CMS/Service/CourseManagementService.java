@@ -80,7 +80,7 @@ public class CourseManagementService {
 		}
 		return null;
 	}
-	
+	// creates the mapping by API Call and Validate the role
 	public Users fetchUser(int id) {
 		String url="http://localhost:8080/user/"+String.valueOf(id);
 		RestTemplate restTemplate=new RestTemplate();
@@ -88,4 +88,9 @@ public class CourseManagementService {
 		return result;
 	}
 
+	public CourseManagementService(CourseRepository courseRepository) {
+		this.courseRepository = courseRepository;
+	}
+
+	
 }

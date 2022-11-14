@@ -20,7 +20,6 @@ import lombok.AllArgsConstructor
 "instructorName":"Rahul"
 }
 */;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor

@@ -5,8 +5,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.example.CMS.Model.Assignment;
+import com.example.CMS.Model.Roles;
+import com.example.CMS.Model.Users;
 import com.example.CMS.Repository.AssignmentRepository;
 
 @Service
@@ -15,7 +18,12 @@ public class AssignmentManagementService {
 	@Autowired
 	AssignmentRepository assignmentRepository;
 
-	public String saveNewAssignment(Assignment assignment) {
+	public String saveNewAssignment(Assignment assignment, int userId) throws Exception{
+		Users fetched = fetchUser(userId);
+
+		if (!fetched.getRole().equals(Roles.INSTRUCTOR)) {
+			throw new Exception("Only Instructor Allowed ");
+		}
 		assignmentRepository.save(assignment);
 		return "Created new assignment";
 	}
@@ -50,4 +58,17 @@ public class AssignmentManagementService {
 		}
 		return null;
 	}
+// creates the mapping by API Call and Validate the role
+	public Users fetchUser(int id) {
+		String url = "http://localhost:8080/user/" + String.valueOf(id);
+		RestTemplate restTemplate = new RestTemplate();
+		Users result = restTemplate.getForObject(url, Users.class);
+		return result;
+	}
+
+	public AssignmentManagementService(AssignmentRepository assignmentRepository) {
+		this.assignmentRepository = assignmentRepository;
+	}
+	
+	
 }
